@@ -115,7 +115,7 @@
       </joint>
     </xacro:if>
 
-    <xacro:unless value="${use_fake_hardware}">
+    <xacro:unless value="${use_fake_hardware}"> <!--block it open -->
       <joint name="${prefix}robotiq_hande_left_finger_joint" type="fixed">
         <origin xyz="${grip_pos_max} 0 $(arg hande_height)" rpy="0 0 0"/>
         <parent link="${prefix}robotiq_hande_link"/>
@@ -156,7 +156,7 @@
       </joint>
     </xacro:if>
 
-    <xacro:unless value="${use_fake_hardware}">
+    <xacro:unless value="${use_fake_hardware}"> <!--block it open -->
       <joint name="${prefix}robotiq_hande_right_finger_joint" type="fixed">
         <origin xyz="-${grip_pos_max} 0 $(arg hande_height)" rpy="0 0 0"/>
         <parent link="${prefix}robotiq_hande_link"/>
