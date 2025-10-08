@@ -30,24 +30,25 @@
             rpy:='0 0 0'"
   >
     <!-- ros2_control parameters  -->
-    <xacro:robotiq_hande_ros2_control
-      name="${name}"
-      prefix="${prefix}"
-      grip_pos_min="${grip_pos_min}"
-      grip_pos_max="${grip_pos_max}"
-      tty_port="${tty_port}"
-      baudrate="${baudrate}"
-      parity="${parity}"
-      data_bits="${data_bits}"
-      stop_bit="${stop_bit}"
-      slave_id="${slave_id}"
-      frequency_hz="${frequency_hz}"
-      create_socat_tty="${create_socat_tty}"
-      socat_ip_address="${socat_ip_address}"
-      socat_port="${socat_port}"
-      use_fake_hardware="${use_fake_hardware}"
-    />
-
+    <xacro:if value="${use_fake_hardware}">
+      <xacro:robotiq_hande_ros2_control
+        name="${name}"
+        prefix="${prefix}"
+        grip_pos_min="${grip_pos_min}"
+        grip_pos_max="${grip_pos_max}"
+        tty_port="${tty_port}"
+        baudrate="${baudrate}"
+        parity="${parity}"
+        data_bits="${data_bits}"
+        stop_bit="${stop_bit}"
+        slave_id="${slave_id}"
+        frequency_hz="${frequency_hz}"
+        create_socat_tty="${create_socat_tty}"
+        socat_ip_address="${socat_ip_address}"
+        socat_port="${socat_port}"
+        use_fake_hardware="${use_fake_hardware}"
+      />
+    </xacro:if>  
     <!-- Robotiq Hand-E specs -->
     <!--  + Height added by the IO coupler: 11.0mm -->
     <!--  + Height added by the Hand-E: 99.0mm -->
@@ -111,13 +112,22 @@
       </xacro:__robotiq_hande_cylinder_inertial>
     </link>
 
-    <joint name="${prefix}robotiq_hande_left_finger_joint" type="prismatic">
-      <origin xyz="0 0 $(arg hande_height)" rpy="0 0 0"/>
-      <parent link="${prefix}robotiq_hande_link"/>
-      <child link="${prefix}robotiq_hande_left_finger"/>
-      <axis xyz="1 0 0"/>
-      <limit effort="130" lower="${grip_pos_min}" upper="${grip_pos_max}" velocity="0.15"/>
-    </joint>
+    <xacro:if value="${use_fake_hardware}">
+      <joint name="${prefix}robotiq_hande_left_finger_joint" type="prismatic">
+        <origin xyz="0 0 $(arg hande_height)" rpy="0 0 0"/>
+        <parent link="${prefix}robotiq_hande_link"/>
+        <child link="${prefix}robotiq_hande_left_finger"/>
+        <axis xyz="1 0 0"/>
+        <limit effort="130" lower="${grip_pos_min}" upper="${grip_pos_max}" velocity="0.15"/>
+      </joint>
+    </xacro:if>
+    <xacro:unless value="${use_fake_hardware}"> <!--block it open -->
+      <joint name="${prefix}robotiq_hande_left_finger_joint" type="fixed">
+        <origin xyz="${grip_pos_max} 0 $(arg hande_height)" rpy="0 0 0"/>
+        <parent link="${prefix}robotiq_hande_link"/>
+        <child link="${prefix}robotiq_hande_left_finger"/>
+      </joint>
+    </xacro:unless>
 
     <link name="${prefix}robotiq_hande_left_finger">
       <visual>
@@ -141,14 +151,23 @@
       </inertial>
     </link>
 
-    <joint name="${prefix}robotiq_hande_right_finger_joint" type="prismatic">
-      <origin xyz="0 0 $(arg hande_height)" rpy="0 0 0"/>
-      <parent link="${prefix}robotiq_hande_link"/>
-      <child link="${prefix}robotiq_hande_right_finger"/>
-      <axis xyz="-1 0 0"/>
-      <limit effort="130" lower="${grip_pos_min}" upper="${grip_pos_max}" velocity="0.15"/>
-      <mimic joint="${prefix}robotiq_hande_left_finger_joint" multiplier="1" offset="0"/>
-    </joint>
+    <xacro:if value="${use_fake_hardware}">
+      <joint name="${prefix}robotiq_hande_right_finger_joint" type="prismatic">
+        <origin xyz="0 0 $(arg hande_height)" rpy="0 0 0"/>
+        <parent link="${prefix}robotiq_hande_link"/>
+        <child link="${prefix}robotiq_hande_right_finger"/>
+        <axis xyz="-1 0 0"/>
+        <limit effort="130" lower="${grip_pos_min}" upper="${grip_pos_max}" velocity="0.15"/>
+        <mimic joint="${prefix}robotiq_hande_left_finger_joint" multiplier="1" offset="0"/>
+      </joint>
+    </xacro:if>
+    <xacro:unless value="${use_fake_hardware}"> <!--block it open -->
+      <joint name="${prefix}robotiq_hande_right_finger_joint" type="fixed">
+        <origin xyz="-${grip_pos_max} 0 $(arg hande_height)" rpy="0 0 0"/>
+        <parent link="${prefix}robotiq_hande_link"/>
+        <child link="${prefix}robotiq_hande_right_finger"/>
+      </joint>
+    </xacro:unless>
 
     <link name="${prefix}robotiq_hande_right_finger">
       <visual>
