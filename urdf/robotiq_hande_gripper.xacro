@@ -54,6 +54,10 @@
     <xacro:arg name="hande_height" default="0.099"/>
     <xacro:arg name="hande_radius" default="0.0375"/>
 
+    <material name="white">
+      <color rgba="1.0 1.0 1.0 1.0" />
+    </material>
+
     <joint name="${prefix}robotiq_hande_coupler_joint" type="fixed">
       <origin xyz="${xyz}" rpy="${rpy}"/>
       <parent link="${parent}"/>
@@ -125,16 +129,17 @@
 
     <link name="${prefix}robotiq_hande_left_finger">
       <visual>
-        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <origin xyz="-0.026 0 -0.012" rpy="${pi/2} 0 ${-pi/2}"/>
         <geometry>
-          <mesh filename="package://robotiq_hande_description/meshes/finger.dae" scale="1.0 1.0 1.0"/>
+          <mesh filename="package://robotiq_hande_description/meshes/drims/hand_e_cubo_piccolo.stl" scale="1e-3 1e-3 1e-3"/>
         </geometry>
+        <material name="white" />
       </visual>
 
       <collision>
-        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <origin xyz="-0.026 0 -0.012" rpy="${pi/2} 0 ${-pi/2}"/>
         <geometry>
-          <mesh filename="package://robotiq_hande_description/meshes/finger_collision.dae" scale="1.0 1.0 1.0"/>
+          <mesh filename="package://robotiq_hande_description/meshes/drims/hand_e_cubo_piccolo.stl" scale="1e-3 1e-3 1e-3"/>
         </geometry>
       </collision>
 
@@ -147,7 +152,8 @@
 
     <xacro:if value="${use_fake_hardware}">
       <joint name="${prefix}robotiq_hande_right_finger_joint" type="prismatic">
-        <origin xyz="0 0 $(arg hande_height)" rpy="0 0 0"/>
+        <!-- <origin xyz="0 0 $(arg hande_height)" rpy="${pi/2} 0 ${pi/2}"/> -->
+        <origin xyz="0 0 $(arg hande_height)" rpy="0.0 0 0.0"/>
         <parent link="${prefix}robotiq_hande_link"/>
         <child link="${prefix}robotiq_hande_right_finger"/>
         <axis xyz="-1 0 0"/>
@@ -158,7 +164,7 @@
 
     <xacro:unless value="${use_fake_hardware}"> <!--block it open -->
       <joint name="${prefix}robotiq_hande_right_finger_joint" type="fixed">
-        <origin xyz="-${grip_pos_max} 0 $(arg hande_height)" rpy="0 0 0"/>
+        <origin xyz="-${grip_pos_max} 0 $(arg hande_height)" rpy="0.0 0.0 0.0"/>
         <parent link="${prefix}robotiq_hande_link"/>
         <child link="${prefix}robotiq_hande_right_finger"/>
       </joint>
@@ -166,16 +172,17 @@
 
     <link name="${prefix}robotiq_hande_right_finger">
       <visual>
-        <origin xyz="0 0 0" rpy="0 0 ${pi}"/>
+        <origin xyz="0.026 0 -0.012" rpy="${pi/2} 0 ${pi/2}"/>
         <geometry>
-          <mesh filename="package://robotiq_hande_description/meshes/finger.dae" scale="1.0 1.0 1.0"/>
+          <mesh filename="package://robotiq_hande_description/meshes/drims/hand_e_cubo_piccolo.stl" scale="1e-3 1e-3 1e-3"/>
         </geometry>
+        <material name="white" />
       </visual>
 
       <collision>
-        <origin xyz="0 0 0" rpy="0 0 ${pi}"/>
+        <origin xyz="0.026 0 -0.012" rpy="${pi/2} 0 ${pi/2}"/>
         <geometry>
-          <mesh filename="package://robotiq_hande_description/meshes/finger_collision.dae" scale="1.0 1.0 1.0"/>
+          <mesh filename="package://robotiq_hande_description/meshes/drims/hand_e_cubo_piccolo.stl" scale="1e-3 1e-3 1e-3"/>
         </geometry>
       </collision>
 
